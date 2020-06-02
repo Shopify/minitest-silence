@@ -21,15 +21,15 @@ module Minitest
 
         old_stdout = $stdout.dup
         old_stderr = $stderr.dup
-        $stdout.reopen(output_writer)
-        $stderr.reopen(output_writer)
 
         result = begin
+          $stdout.reopen(output_writer)
+          $stderr.reopen(output_writer)
           super
         ensure
-          output_writer.close
           $stdout.reopen(old_stdout)
           $stderr.reopen(old_stderr)
+          output_writer.close
         end
 
         result.output = output_thread.value
@@ -55,11 +55,9 @@ module Minitest
       end
 
       def boxed(title, content, line_width: console_width)
-        box = +"┌── #{title} #{'─' * (line_width - title.length - 6)}┐\n"
-        box << content.gsub(/(.{#{line_width - 4}}|.*\n)/) do |line|
-          format("│ %-#{line_width - 4}s |\n", line.chomp)
-        end
-        box << "└#{'─' * (line_width - 2)}┘\n"
+        box = +"── #{title} ──\n"
+        box << "#{content}\n"
+        box << "───#{'─' * title.length}───\n"
       end
     end
   end

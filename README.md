@@ -12,7 +12,7 @@ gem 'minitest-silence', require: false
 
 ## Usage
 
-The plugin will be aiutomatically activated by Minitest if it is in your application's bundle.
+The plugin will be automatically activated by Minitest if it is in your application's bundle.
 
 - By default, it will simply discard any output writting to `STDOUT` or `STDERR` by your tests.
 - When specifying `--verbose`, the output will be buffered and written to the `STDOUT` inside a box that makes clear what test the output originated from.
