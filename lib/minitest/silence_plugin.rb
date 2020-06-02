@@ -38,8 +38,14 @@ module Minitest
     end
 
     class << self
+      DEFAULT_CONSOLE_WIDTH = 80
+
       def console_width
-        @console_width ||= IO.console.winsize.fetch(1)
+        @console_width ||= if IO.console
+          IO.console.winsize.fetch(1)
+        else
+          DEFAULT_CONSOLE_WIDTH
+        end
       end
 
       def boxed(title, content, line_width: console_width)
