@@ -40,6 +40,12 @@ module Minitest
     class << self
       DEFAULT_CONSOLE_WIDTH = 80
 
+      def setup_winsize_trap
+        Signal.trap('WINCH') do
+          @console_width = nil
+        end
+      end
+
       def console_width
         @console_width ||= if IO.console
           IO.console.winsize.fetch(1)
@@ -76,6 +82,8 @@ module Minitest
       elsif options[:verbose]
         reporter << Minitest::Silence::BoxedOutputReporter.new(options[:io], options)
       end
+
+      Minitest::Silence.setup_winsize_trap
     end
   end
 end
