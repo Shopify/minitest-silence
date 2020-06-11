@@ -57,21 +57,26 @@ module Minitest
 
   class << self
     def plugin_silence_options(opts, options)
+      opts.on('--disable-silence', "Do not rebind standard IO") do
+        options[:disable_silence] = true
+      end
       opts.on('--fail-on-output', "Fail a test when it writes to STDOUT or STDERR") do
         options[:fail_on_output] = true
       end
     end
 
     def plugin_silence_init(options)
-      Minitest::Result.prepend(Minitest::Silence::ResultOutputPatch)
-      Minitest.singleton_class.prepend(Minitest::Silence::RunOneMethodPatch)
+      unless options[:disable_silence]
+        Minitest::Result.prepend(Minitest::Silence::ResultOutputPatch)
+        Minitest.singleton_class.prepend(Minitest::Silence::RunOneMethodPatch)
 
-      if options[:fail_on_output]
-        # We have to make sure this reporter runs as the first reporter, so it can still adjust
-        # the result and other reporters will take the change into account.
-        reporter.reporters.unshift(Minitest::Silence::FailOnOutputReporter.new(options[:io], options))
-      elsif options[:verbose]
-        reporter << Minitest::Silence::BoxedOutputReporter.new(options[:io], options)
+        if options[:fail_on_output]
+          # We have to make sure this reporter runs as the first reporter, so it can still adjust
+          # the result and other reporters will take the change into account.
+          reporter.reporters.unshift(Minitest::Silence::FailOnOutputReporter.new(options[:io], options))
+        elsif options[:verbose]
+          reporter << Minitest::Silence::BoxedOutputReporter.new(options[:io], options)
+        end
       end
     end
   end
