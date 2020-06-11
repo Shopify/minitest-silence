@@ -15,20 +15,29 @@ module Minitest
     end
 
     module RunOneMethodPatch
+      attr_reader :original_stdin, :original_stdout, :original_stderr
+
+      def __run(*)
+        @original_stdin = $stdin.dup
+        @original_stdout = $stdout.dup
+        @original_stderr = $stderr.dup
+        super
+      end
+
       def run_one_method(klass, method_name)
         output_reader, output_writer = IO.pipe
         output_thread = Thread.new { output_reader.read }
 
-        old_stdout = $stdout.dup
-        old_stderr = $stderr.dup
-
         result = begin
           $stdout.reopen(output_writer)
           $stderr.reopen(output_writer)
+          $stdin.reopen(File::NULL)
+
           super
         ensure
-          $stdout.reopen(old_stdout)
-          $stderr.reopen(old_stderr)
+          $stdout.reopen(original_stdout)
+          $stderr.reopen(original_stderr)
+          $stdin.reopen(original_stdin)
           output_writer.close
         end
 
