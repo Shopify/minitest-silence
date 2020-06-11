@@ -3,6 +3,27 @@
 require 'test_helper'
 
 class MinitestSilenceIntegrationTest < IntegrationTest
+  def test_disable_silence
+    process = spawn_test_process(
+      test_file: 'noisy_tests.rb',
+      arguments: ['--disable-silence', '-n', 'test_pass_with_noisy_stdout', '--seed', '123'],
+    ).value
+
+    assert_test_process_successful(process)
+    assert_equal <<~EOM, normalize_output(process.stdout)
+      Run options: --disable-silence -n test_pass_with_noisy_stdout --seed 123
+
+      # Running:
+
+      STDOUT noise
+      .
+
+      Finished in 0.012s, 0.012 runs/s, 0.012 assertions/s.
+
+      1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
+    EOM
+  end
+
   def test_noisy_tests_with_failure
     process = spawn_test_process(test_file: 'noisy_tests.rb').value
 
@@ -38,5 +59,11 @@ class MinitestSilenceIntegrationTest < IntegrationTest
   def test_debugger_is_noop
     process = spawn_test_process(test_file: 'test_with_debugger.rb').value
     assert_test_process_successful(process)
+  end
+
+  private
+
+  def normalize_output(string)
+    string.gsub(/\d+\.\d+/, '0.012')
   end
 end
