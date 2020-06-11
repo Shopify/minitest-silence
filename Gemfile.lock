@@ -8,6 +8,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.0)
+    byebug (11.0.0)
     jaro_winkler (1.5.4)
     minitest (5.14.1)
     parallel (1.19.1)
@@ -33,6 +34,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  byebug
   minitest (~> 5.0)
   minitest-silence!
   rake (~> 12.0)

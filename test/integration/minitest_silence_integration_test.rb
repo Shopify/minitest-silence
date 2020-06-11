@@ -34,4 +34,9 @@ class MinitestSilenceIntegrationTest < IntegrationTest
     assert_test_process_output_includes(process, "STDOUT noise")
     assert_test_process_output_includes(process, "1 runs, 1 assertions, 1 failures, 0 errors, 0 skips")
   end
+
+  def test_debugger_is_noop
+    process = spawn_test_process(test_file: 'test_with_debugger.rb').value
+    assert_test_process_successful(process)
+  end
 end

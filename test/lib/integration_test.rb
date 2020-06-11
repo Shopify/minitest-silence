@@ -99,8 +99,8 @@ class IntegrationTest < Minitest::Test
       pass
     else
       flunk <<~EOM
-        The test process unexpectedly was not successul
-        #{output_box(worker_header(process), process.stdout)}
+        The test process unexpectedly was not successul.
+        #{Minitest::Silence.boxed(process_header(process), process.stdout)}
       EOM
     end
   end
