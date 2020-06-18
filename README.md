@@ -6,6 +6,8 @@ It's best practice for tests to not write anything to `STDOUT` or `STDERR` while
 
 This plugins aims to solve this problem by rebinding `STDOUT` and `STDERR` while a test is running. Any output written will be redirected to a pipe, so it won't interfere with the output of the test runner. The plugin will also bind `STDIN` to `/dev/null`. This codifies the best practice that automated tests should not depend on user input.
 
+This plugin is inspired by [how the Python test runner handles output](https://docs.pytest.org/en/stable/capture.html).
+
 ## Installation
 
 Add this line to your application's Gemfile, and run `bundle install`:
