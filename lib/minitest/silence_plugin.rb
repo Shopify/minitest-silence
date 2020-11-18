@@ -37,6 +37,7 @@ module Minitest
         end
 
         result.output = output_thread.value
+        output_reader.close
         result
       end
     end
