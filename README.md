@@ -18,13 +18,13 @@ gem 'minitest-silence', require: false
 
 ## Usage
 
-The plugin will be automatically activated by Minitest if it is in your application's bundle.
+The plugin will be automatically loaded by Minitest if it is in your application's bundle.
 
-- By default, the captured output produced by tests will be discarded, so the output of the test runner will look like how it was intended.
+- By default, output will be written to `STDOUT` and `STDERR` normally for local test runs, and captured for CI runs. In CI (environments with `ENV["CI"]` set), out put will be captured and discarded, so the output of the test runner will look like how it was intended.
 -  If you run tests with the `--verbose` option , it will be nicely included in the test runner's output, inside a box that will tell you what test it originated from.
-- You can also run this plugin in "strict mode": by running tests with the `--fail-on-output` option, tests will fail if they produce any output to STDOUT or STDERR.
+- You can also run this plugin in "strict mode": by running tests with the `--fail-on-output` option, tests will fail if they produce any output to `STDOUT` or `STDERR`.
 
-You can disable the plugin by providing the `--disable-silence` command line option to your test invocation. The primary use case for this is when you want to use a debugger inside a test, which will require a the standard input and outputs to work interactively.
+You can enable the plugin in any environment by providing the `--enable-silence` command line option to your test invocation. The primary use case for this is when you want to silence output locally.
 
 ## Development
 
