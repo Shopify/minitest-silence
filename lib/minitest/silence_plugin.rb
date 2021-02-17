@@ -54,8 +54,8 @@ module Minitest
 
   class << self
     def plugin_silence_options(opts, options)
-      opts.on('--disable-silence', "Do not rebind standard IO") do
-        options[:disable_silence] = true
+      opts.on('--enable-silence', "Rebind standard IO") do
+        options[:enable_silence] = true
       end
       opts.on('--fail-on-output', "Fail a test when it writes to STDOUT or STDERR") do
         options[:fail_on_output] = true
@@ -63,7 +63,7 @@ module Minitest
     end
 
     def plugin_silence_init(options)
-      unless options[:disable_silence]
+      if options[:enable_silence] || ENV["CI"]
         Minitest::Result.prepend(Minitest::Silence::ResultOutputPatch)
         Minitest.singleton_class.prepend(Minitest::Silence::RunOneMethodPatch)
 

@@ -3,15 +3,18 @@
 require 'test_helper'
 
 class MinitestSilenceIntegrationTest < IntegrationTest
-  def test_disable_silence
+  def test_off_by_default
+    old_ci = ENV["CI"]
+    ENV["CI"] = nil
+
     process = spawn_test_process(
       test_file: 'noisy_tests.rb',
-      arguments: ['--disable-silence', '-n', 'test_pass_with_noisy_stdout', '--seed', '123'],
+      arguments: ['-n', 'test_pass_with_noisy_stdout', '--seed', '123'],
     ).value
 
     assert_test_process_successful(process)
     assert_equal <<~EOM, normalize_output(process.stdout)
-      Run options: --disable-silence -n test_pass_with_noisy_stdout --seed 123
+      Run options: -n test_pass_with_noisy_stdout --seed 123
 
       # Running:
 
@@ -22,10 +25,56 @@ class MinitestSilenceIntegrationTest < IntegrationTest
 
       1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
     EOM
+  ensure
+    ENV["CI"] = old_ci
+  end
+
+  def test_enable_silence
+    process = spawn_test_process(
+      test_file: 'noisy_tests.rb',
+      arguments: ['--enable-silence', '-n', 'test_pass_with_noisy_stdout', '--seed', '123'],
+    ).value
+
+    assert_test_process_successful(process)
+    assert_equal <<~EOM, normalize_output(process.stdout)
+      Run options: --enable-silence -n test_pass_with_noisy_stdout --seed 123
+
+      # Running:
+
+      .
+
+      Finished in 0.012s, 0.012 runs/s, 0.012 assertions/s.
+
+      1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
+    EOM
+  end
+
+  def test_env_enable_silence_in_ci
+    process = spawn_test_process(
+      test_file: 'noisy_tests.rb',
+      arguments: ['-n', 'test_pass_with_noisy_stdout', '--seed', '123'],
+      env: { "CI" => "yes" },
+    ).value
+
+    assert_test_process_successful(process)
+    assert_equal <<~EOM, normalize_output(process.stdout)
+      Run options: -n test_pass_with_noisy_stdout --seed 123
+
+      # Running:
+
+      .
+
+      Finished in 0.012s, 0.012 runs/s, 0.012 assertions/s.
+
+      1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
+    EOM
   end
 
   def test_noisy_tests_with_failure
-    process = spawn_test_process(test_file: 'noisy_tests.rb').value
+    process = spawn_test_process(
+      test_file: 'noisy_tests.rb',
+      env: { "CI" => "yes" },
+    ).value
 
     refute_test_process_successful(process)
     refute_test_process_output_includes(process, "STDOUT noise")
@@ -37,6 +86,7 @@ class MinitestSilenceIntegrationTest < IntegrationTest
     process = spawn_test_process(
       test_file: 'noisy_tests.rb',
       arguments: ['--verbose', '-n', 'test_pass_with_noisy_stdout'],
+      env: { "CI" => "yes" },
     ).value
 
     assert_test_process_successful(process)
@@ -48,6 +98,7 @@ class MinitestSilenceIntegrationTest < IntegrationTest
     process = spawn_test_process(
       test_file: 'noisy_tests.rb',
       arguments: ['--fail-on-output', '-n', 'test_pass_with_noisy_stdout'],
+      env: { "CI" => "yes" },
     ).value
 
     refute_test_process_successful(process)
@@ -57,7 +108,11 @@ class MinitestSilenceIntegrationTest < IntegrationTest
   end
 
   def test_debugger_is_noop
-    process = spawn_test_process(test_file: 'test_with_debugger.rb').value
+    process = spawn_test_process(
+      test_file: 'test_with_debugger.rb',
+      env: { "CI" => "yes" },
+    ).value
+
     assert_test_process_successful(process)
   end
 
