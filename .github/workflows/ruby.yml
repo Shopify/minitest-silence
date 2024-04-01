@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: Set up Ruby ${{ matrix.ruby_version }}
-      uses: actions/setup-ruby@v1
+      uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby_version }}
         bundler: latest
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Set up Ruby
-      uses: actions/setup-ruby@v1
+      uses: ruby/setup-ruby@v1
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: gem install bundler && bundle install
