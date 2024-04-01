@@ -27,10 +27,8 @@ jobs:
     name: "Lint (using Rubocop)"
     runs-on: ubuntu-latest
     steps:
-    - name: Set up Ruby 2.5
+    - name: Set up Ruby
       uses: actions/setup-ruby@v1
-      with:
-        ruby-version: 2.5
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: gem install bundler && bundle install
