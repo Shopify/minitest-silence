@@ -47,17 +47,17 @@ module Minitest
       def boxed(title, content)
         box = +"── #{title} ──\n"
         box << "#{content}\n"
-        box << "───#{'─' * title.length}───\n"
+        box << "───#{"─" * title.length}───\n"
       end
     end
   end
 
   class << self
     def plugin_silence_options(opts, options)
-      opts.on('--enable-silence', "Rebind standard IO") do
+      opts.on("--enable-silence", "Rebind standard IO") do
         options[:enable_silence] = true
       end
-      opts.on('--fail-on-output', "Fail a test when it writes to STDOUT or STDERR") do
+      opts.on("--fail-on-output", "Fail a test when it writes to STDOUT or STDERR") do
         options[:fail_on_output] = true
       end
     end
