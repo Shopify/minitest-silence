@@ -1,6 +1,7 @@
 # frozen_string_literal: true
-require 'minitest/autorun'
-require 'byebug'
+
+require "minitest/autorun"
+require "byebug"
 
 class TestWithDebugger < Minitest::Test
   def test_debugger

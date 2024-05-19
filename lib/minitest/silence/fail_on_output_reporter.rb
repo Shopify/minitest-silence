@@ -8,7 +8,7 @@ module Minitest
           assertion = Minitest::Assertion.new(<<~EOM.chomp)
             The test unexpectedly wrote output to STDOUT or STDERR.
 
-            #{Minitest::Silence.boxed('Output', result.output)}
+            #{Minitest::Silence.boxed("Output", result.output)}
           EOM
           assertion.set_backtrace(caller)
           result.failures << assertion

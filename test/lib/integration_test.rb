@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 class IntegrationTest < Minitest::Test
-  TEST_FILE_FIXTURES = File.expand_path('../../fixtures/', __FILE__)
+  TEST_FILE_FIXTURES = File.expand_path("../../fixtures/", __FILE__)
 
   class TestProcessResult < Struct.new(:status, :stdout)
   end
@@ -31,8 +31,8 @@ class IntegrationTest < Minitest::Test
 
         killer = Thread.new do
           sleep(timeout)
-          Process.kill('KILL', pid)
-          STDERR.puts("Sent kill signal to test process after #{timeout}s...")
+          Process.kill("KILL", pid)
+          $stderr.puts("Sent kill signal to test process after #{timeout}s...")
         rescue Errno::ESRCH
           # spawned process exited normally
         end
